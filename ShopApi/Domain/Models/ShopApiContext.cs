@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ShopApi.Models
+namespace ShopApi.Domain.Models
 {
     public class ShopApiContext : DbContext
     {
