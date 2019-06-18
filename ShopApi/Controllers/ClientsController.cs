@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShopApi.Domain.Models;
 using ShopApi.Domain.Services;
+using ShopApi.Extensions;
 using ShopApi.Resources;
 
 namespace ShopApi.Controllers
@@ -45,14 +46,17 @@ namespace ShopApi.Controllers
             return resource;
         }
 
-//        [HttpPost]
-//        public async Task<ActionResult<Client>> AddClient(Client client)
-//        {
-//            _context.Clients.Add(client);
-//            await _context.SaveChangesAsync();
-//
-//            return CreatedAtAction(nameof(GetClient), new {id = client.Id}, client);
-//        }
+        [HttpPost]
+        public async Task<IActionResult> AddClientAsync([FromBody] SaveClientResource resource)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.GetErrorMessages());
+            }
+
+            var client = _mapper.Map<SaveClientResource, Client>(resource);
+
+        }
 //
 //        [HttpDelete("{id}")]
 //        public async Task<IActionResult> DeleteClient(long id)
