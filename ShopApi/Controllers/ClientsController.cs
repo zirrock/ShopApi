@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShopApi.Domain.Models;
 using ShopApi.Domain.Services;
+using ShopApi.Resources;
 
 namespace ShopApi.Controllers
 {
@@ -12,30 +14,35 @@ namespace ShopApi.Controllers
     public class ClientsController : Controller
     {
         private readonly IClientService _clientService;
+        private readonly IMapper _mapper;
 
-        public ClientsController(IClientService clientService)
+        public ClientsController(IClientService clientService, IMapper mapper)
         {
             _clientService = clientService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Client>> GetClients()
+        public async Task<IEnumerable<ClientResource>> GetClients()
         {
             var clients = await _clientService.GetClientsAsync();
-            return clients;
+            var resources = _mapper.Map<IEnumerable<Client>, IEnumerable<ClientResource>>(clients);
+            return resources;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Client>> GetClient(long id)
+        public async Task<ClientResource> GetClient(long id)
         {
-            var client = await _clientService.GetClientByIdAsync(id);  
+            var client = await _clientService.GetClientByIdAsync(id);
 
             if (client == null)
             {
-                return NotFound();
+                return null;
             }
 
-            return client;
+            var resource = _mapper.Map<Client, ClientResource>(client);
+
+            return resource;
         }
 
 //        [HttpPost]

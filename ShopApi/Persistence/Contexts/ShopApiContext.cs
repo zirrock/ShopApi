@@ -7,6 +7,7 @@ namespace ShopApi.Persistence.Contexts
     {
         public DbSet<Client> Clients { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         public ShopApiContext(DbContextOptions<ShopApiContext> options)
             : base(options)

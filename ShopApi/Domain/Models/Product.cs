@@ -7,8 +7,8 @@ namespace ShopApi.Domain.Models
 {
     public class Product
     {
-        public long Id;
-        public string Name;
-        public IList<Order> Orders;
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public IList<Order> Orders { get; set; } = new List<Order>();
     }
 }
