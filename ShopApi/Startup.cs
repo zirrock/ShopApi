@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ShopApi.Models;
+using ShopApi.Domain.Models;
+using ShopApi.Persistence.Contexts;
 
 namespace ShopApi
 {
