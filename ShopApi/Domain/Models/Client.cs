@@ -1,6 +1,4 @@
-﻿
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ShopApi.Domain.Models
@@ -15,8 +13,7 @@ namespace ShopApi.Domain.Models
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
 
-        [Phone]
-        public string Phone { get; set; }
+        [Phone] public string Phone { get; set; }
 
         public IList<Order> Orders { get; set; } = new List<Order>();
     }

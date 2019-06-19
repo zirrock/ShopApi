@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ShopApi.Domain.Models;
 using ShopApi.Domain.Services;
 using ShopApi.Extensions;
@@ -23,6 +22,7 @@ namespace ShopApi.Controllers
             _mapper = mapper;
         }
 
+        // Returns list of all clients
         [HttpGet]
         public async Task<IEnumerable<ClientResource>> GetClientList()
         {
@@ -31,22 +31,22 @@ namespace ShopApi.Controllers
             return resources;
         }
 
+        // Returns first client found with given name, surname and login
         [HttpGet("credentials")]
         public async Task<ClientResource> GetClientByCredentials([FromBody] SearchClientResource resource)
         {
-            var client = await _clientService.GetClientByCredentialsAsync(resource.Name, resource.Surname, resource.Login);
+            var client =
+                await _clientService.GetClientByCredentialsAsync(resource.Name, resource.Surname, resource.Login);
             var clientResource = _mapper.Map<Client, ClientResource>(client);
 
             return clientResource;
         }
 
+        // Adds new client
         [HttpPost]
         public async Task<IActionResult> AddClientAsync([FromBody] SaveClientResource resource)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.GetErrorMessages());
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState.GetErrorMessages());
 
             var client = _mapper.Map<SaveClientResource, Client>(resource);
             var result = await _clientService.SaveClientAsync(client);
@@ -59,25 +59,19 @@ namespace ShopApi.Controllers
             return Ok(clientResource);
         }
 
+        // Updates client data
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClientAsync(long id, [FromBody] SaveClientResource resource)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.GetErrorMessages());
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState.GetErrorMessages());
 
             var client = _mapper.Map<SaveClientResource, Client>(resource);
             var result = await _clientService.UpdateClientAsync(id, client);
 
-            if (!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
+            if (!result.Success) return BadRequest(result.Message);
 
             var clientResource = _mapper.Map<Client, ClientResource>(result.Client);
             return Ok(clientResource);
         }
-
     }
 }

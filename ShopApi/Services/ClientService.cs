@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ShopApi.Communication;
 using ShopApi.Domain.Models;
@@ -31,30 +29,27 @@ namespace ShopApi.Services
             return await _clientRepository.GetClientByCredentials(name, surname, login);
         }
 
-        public async Task<SaveClientResponse> SaveClientAsync(Client client)
+        public async Task<ClientResponse> SaveClientAsync(Client client)
         {
             try
             {
                 await _clientRepository.AddClientAsync(client);
                 await _unitOfWork.CompleteAsync();
 
-                return new SaveClientResponse(client);
+                return new ClientResponse(client);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new SaveClientResponse($"An error has occurred while saving the client: {e.Message}");
+                return new ClientResponse($"An error has occurred while saving the client: {e.Message}");
             }
         }
 
-        public async Task<SaveClientResponse> UpdateClientAsync(long id, Client client)
+        public async Task<ClientResponse> UpdateClientAsync(long id, Client client)
         {
             var existingClient = await _clientRepository.GetClientByIdAsync(id);
 
-            if (existingClient == null)
-            {
-                return new SaveClientResponse("Client not found");
-            }
+            if (existingClient == null) return new ClientResponse("Client not found");
 
             existingClient.Name = client.Name;
             existingClient.Surname = client.Surname;
@@ -67,12 +62,12 @@ namespace ShopApi.Services
                 _clientRepository.UpdateClient(existingClient);
                 await _unitOfWork.CompleteAsync();
 
-                return new SaveClientResponse(existingClient);
+                return new ClientResponse(existingClient);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new SaveClientResponse($"An error has occurred when updating the client: {e.Message}");
+                return new ClientResponse($"An error has occurred when updating the client: {e.Message}");
             }
         }
     }

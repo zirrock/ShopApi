@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ShopApi.Persistence.Contexts;
+﻿using ShopApi.Persistence.Contexts;
 
 namespace ShopApi.Persistence.Repositories
 {

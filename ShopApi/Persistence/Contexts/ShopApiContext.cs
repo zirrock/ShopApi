@@ -5,13 +5,13 @@ namespace ShopApi.Persistence.Contexts
 {
     public class ShopApiContext : DbContext
     {
-        public DbSet<Client> Clients { get; set; }
-        public DbSet<Order> Orders { get; set; }
-
         public ShopApiContext(DbContextOptions<ShopApiContext> options)
             : base(options)
         {
         }
+
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -15,8 +13,8 @@ namespace ShopApi.Controllers
     [ApiController]
     public class OrdersController : Controller
     {
-        private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
+        private readonly IOrderService _orderService;
 
         public OrdersController(IOrderService orderService, IMapper mapper)
         {
@@ -24,13 +22,11 @@ namespace ShopApi.Controllers
             _mapper = mapper;
         }
 
+        // Adds new client's order
         [HttpPost]
         public async Task<IActionResult> AddOrderAsync([FromBody] SaveOrderResource resource)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.GetErrorMessages());
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState.GetErrorMessages());
 
             var order = _mapper.Map<SaveOrderResource, Order>(resource);
             var result = await _orderService.SaveOrderAsync(order);
@@ -43,6 +39,7 @@ namespace ShopApi.Controllers
             return Ok(orderResource);
         }
 
+        // Returns all non-deleted orders created by users with given id
         [HttpGet("{id}")]
         public async Task<IEnumerable<OrderResource>> GetClientsOrderAsync(long id)
         {
@@ -51,13 +48,15 @@ namespace ShopApi.Controllers
             return resources;
         }
 
+        // Changes order status to deleted
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveOrderByIdAsync(long id)
         {
             var result = await _orderService.RemoveOrderByIdAsync(id);
 
             if (!result.Success)
-                return BadRequest(result.Message);;
+                return BadRequest(result.Message);
+            ;
 
             return Ok(result.Order);
         }

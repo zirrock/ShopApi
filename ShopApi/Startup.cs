@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ShopApi.Domain.Models;
 using ShopApi.Domain.Repositories;
 using ShopApi.Domain.Services;
 using ShopApi.Persistence.Contexts;
@@ -43,14 +42,9 @@ namespace ShopApi
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
             else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-            }
 
             app.UseHttpsRedirection();
             app.UseMvc();

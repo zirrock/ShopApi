@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using ShopApi.Communication;
 using ShopApi.Domain.Models;
 using ShopApi.Domain.Repositories;
 using ShopApi.Persistence.Contexts;
@@ -14,7 +12,6 @@ namespace ShopApi.Persistence.Repositories
     {
         public OrderRepository(ShopApiContext context) : base(context)
         {
-
         }
 
         public async Task<Order> GetOrderByIdAsync(long id)
@@ -29,7 +26,8 @@ namespace ShopApi.Persistence.Repositories
 
         public async Task<IEnumerable<Order>> GetClientsOrderByIdAsync(long id)
         {
-            return await _context.Orders.Include(p => p.Client).Where(p => p.ClientId == id).Where(p => !p.IsDeleted).ToListAsync();
+            return await _context.Orders.Include(p => p.Client).Where(p => p.ClientId == id).Where(p => !p.IsDeleted)
+                .ToListAsync();
         }
 
         public void UpdateOrder(Order order)

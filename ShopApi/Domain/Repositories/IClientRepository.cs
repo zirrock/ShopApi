@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ShopApi.Communication;
 using ShopApi.Domain.Models;
 
 namespace ShopApi.Domain.Repositories
