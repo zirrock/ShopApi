@@ -56,9 +56,10 @@ namespace ShopApi.Controllers
 
             if (!result.Success)
                 return BadRequest(result.Message);
-            ;
 
-            return Ok(result.Order);
+            var resource = _mapper.Map<Order, OrderResource>(result.Order);
+
+            return Ok(resource);
         }
     }
 }
