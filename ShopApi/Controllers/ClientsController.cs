@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ShopApi.Models;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using ShopApi.Domain.Models;
+using ShopApi.Domain.Services;
+using ShopApi.Extensions;
+using ShopApi.Resources;
 
 namespace ShopApi.Controllers
 {
@@ -14,41 +13,65 @@ namespace ShopApi.Controllers
     [ApiController]
     public class ClientsController : Controller
     {
-        private readonly ShopApiContext _context;
+        private readonly IClientService _clientService;
+        private readonly IMapper _mapper;
 
-        public ClientsController(ShopApiContext context)
+        public ClientsController(IClientService clientService, IMapper mapper)
         {
-            _context = context;
+            _clientService = clientService;
+            _mapper = mapper;
         }
 
-        // Returns an IEnumerable of all clients in the database
+        // Returns list of all clients
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Client>>> GetClients()
+        public async Task<IEnumerable<ClientResource>> GetClientList()
         {
-            return await _context.Clients.ToListAsync();
+            var clients = await _clientService.GetClientsAsync();
+            var resources = _mapper.Map<IEnumerable<Client>, IEnumerable<ClientResource>>(clients);
+            return resources;
         }
 
-        // Returns the client with given id
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Client>> GetClient(long id)
+        // Returns first client found with given name, surname and login
+        [HttpGet("credentials")]
+        public async Task<ClientResource> GetClientByCredentials([FromBody] SearchClientResource resource)
         {
-            var client = await _context.Clients.FindAsync(id);  
+            var client =
+                await _clientService.GetClientByCredentialsAsync(resource.Name, resource.Surname, resource.Login);
+            var clientResource = _mapper.Map<Client, ClientResource>(client);
 
-            if (client == null)
-            {
-                return NotFound();
-            }
-
-            return client;
+            return clientResource;
         }
 
+        // Adds new client
         [HttpPost]
-        public async Task<ActionResult<Client>> AddClient(Client client)
+        public async Task<IActionResult> AddClientAsync([FromBody] SaveClientResource resource)
         {
-            _context.Clients.Add(client);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid) return BadRequest(ModelState.GetErrorMessages());
 
-            return CreatedAtAction(nameof(GetClient), new {id = client.Id}, client);
+            var client = _mapper.Map<SaveClientResource, Client>(resource);
+            var result = await _clientService.SaveClientAsync(client);
+
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            var clientResource = _mapper.Map<Client, ClientResource>(result.Client);
+
+            return Ok(clientResource);
+        }
+
+        // Updates client data
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateClientAsync(long id, [FromBody] SaveClientResource resource)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState.GetErrorMessages());
+
+            var client = _mapper.Map<SaveClientResource, Client>(resource);
+            var result = await _clientService.UpdateClientAsync(id, client);
+
+            if (!result.Success) return BadRequest(result.Message);
+
+            var clientResource = _mapper.Map<Client, ClientResource>(result.Client);
+            return Ok(clientResource);
         }
     }
 }
