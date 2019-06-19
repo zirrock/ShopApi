@@ -26,6 +26,11 @@ namespace ShopApi.Persistence.Repositories
             return await _context.Clients.FindAsync(id);
         }
 
+        public async Task<Client> GetClientByCredentials(string name, string surname, string login)
+        {
+            return await _context.Clients.FirstOrDefaultAsync(p => p.Name == name && p.Surname == surname && p.Login == login);
+        }
+
         public async Task AddClientAsync(Client client)
         {
             await _context.Clients.AddAsync(client);

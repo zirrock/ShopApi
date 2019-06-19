@@ -46,6 +46,21 @@ namespace ShopApi.Controllers
 //            return resource;
 //        }
 
+        [HttpGet]
+        public async Task<ClientResource> GetClientByCredentials(string name, string surname, string login)
+        {
+            var client = await _clientService.GetClientByCredentialsAsync(name, surname, login);
+
+            if (client == null)
+            {
+                return null;
+            }
+
+            var resource = _mapper.Map<Client, ClientResource>(client);
+
+            return resource;
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddClientAsync([FromBody] SaveClientResource resource)
         {
@@ -84,22 +99,6 @@ namespace ShopApi.Controllers
             var clientResource = _mapper.Map<Client, ClientResource>(result.Client);
             return Ok(clientResource);
         }
-//
-//        [HttpDelete("{id}")]
-//        public async Task<IActionResult> DeleteClient(long id)
-//        {
-//            var client = await _context.Clients.FindAsync(id);
-//
-//            if (client == null)
-//            {
-//                return NotFound();
-//            }
-//
-//            _context.Clients.Remove(client);
-//            await _context.SaveChangesAsync();
-//
-//            return NoContent();
-//        }
 
     }
 }
