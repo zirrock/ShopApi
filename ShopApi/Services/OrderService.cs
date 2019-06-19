@@ -49,5 +49,30 @@ namespace ShopApi.Services
         {
             return await _orderRepository.GetClientsOrderByIdAsync(id);
         }
+
+        public async Task<SaveOrderResponse> RemoveOrderByIdAsync(long id)
+        {
+            var existingOrder = await _orderRepository.GetOrderByIdAsync(id);
+
+            if (existingOrder == null)
+            {
+                return new SaveOrderResponse("Order not found");
+            }
+
+            existingOrder.IsDeleted = true;
+
+            try
+            {
+                _orderRepository.UpdateOrder(existingOrder);
+                await _unitOfWork.CompleteAsync();
+
+                return new SaveOrderResponse(existingOrder);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new SaveOrderResponse($"An error has occurred when updating the client: {e.Message}");
+            }
+        }
     }
 }

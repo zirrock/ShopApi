@@ -50,5 +50,16 @@ namespace ShopApi.Controllers
             var resources = _mapper.Map<IEnumerable<Order>, IEnumerable<OrderResource>>(orders);
             return resources;
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoveOrderByIdAsync(long id)
+        {
+            var result = await _orderService.RemoveOrderByIdAsync(id);
+
+            if (!result.Success)
+                return BadRequest(result.Message);;
+
+            return Ok(result.Order);
+        }
     }
 }
