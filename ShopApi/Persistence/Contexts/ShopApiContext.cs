@@ -32,7 +32,6 @@ namespace ShopApi.Persistence.Contexts
             builder.Entity<Order>().Property(p => p.Id).IsRequired().ValueGeneratedOnAdd();
             builder.Entity<Order>().Property(p => p.ProductName).IsRequired().HasMaxLength(80);
             builder.Entity<Order>().Property(p => p.ProductQuantity).IsRequired();
-            builder.Entity<Order>().Property(p => p.OrderDate).IsRequired();
             builder.Entity<Order>().Property(p => p.IsDeleted).IsRequired();
         }
     }

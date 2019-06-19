@@ -9,7 +9,7 @@ namespace ShopApi.Domain.Services
     public interface IClientService
     {
         Task<IEnumerable<Client>> GetClientsAsync();
-        Task<Client> GetClientByCredentials(string name, string surname, string login);
+        Task<Client> GetClientByCredentialsAsync(string name, string surname, string login);
         Task<SaveClientResponse> SaveClientAsync(Client client);
         Task<SaveClientResponse> UpdateClientAsync(long id, Client client);
 

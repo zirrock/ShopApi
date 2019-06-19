@@ -2,45 +2,53 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using ShopApi.Domain.Models;
+using ShopApi.Domain.Services;
+using ShopApi.Extensions;
+using ShopApi.Resources;
 
 namespace ShopApi.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class OrdersController : Controller
     {
-        // GET: api/<controller>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IOrderService _orderService;
+        private readonly IMapper _mapper;
+
+        public OrdersController(IOrderService orderService, IMapper mapper)
         {
-            return new string[] { "value1", "value2" };
+            _orderService = orderService;
+            _mapper = mapper;
         }
 
-        // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<IActionResult> AddOrderAsync([FromBody] SaveOrderResource resource)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.GetErrorMessages());
+            }
+
+            var order = _mapper.Map<SaveOrderResource, Order>(resource);
+            var result = await _orderService.SaveOrderAsync(order);
+
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            var orderResource = _mapper.Map<Order, OrderResource>(result.Order);
+
+            return Ok(orderResource);
         }
 
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        [HttpGet("{id}")]
+        public async Task<IEnumerable<OrderResource>> GetClientsOrderAsync(long id)
         {
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            var orders = await _orderService.GetClientsOrderAsync(id);
+            var resources = _mapper.Map<IEnumerable<Order>, IEnumerable<OrderResource>>(orders);
+            return resources;
         }
     }
 }

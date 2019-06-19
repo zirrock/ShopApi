@@ -26,12 +26,7 @@ namespace ShopApi.Services
             return await _clientRepository.GetClientsAsync();
         }
 
-        private async Task<Client> GetClientByIdAsync(long id)
-        {
-            return await _clientRepository.GetClientByIdAsync(id);
-        }
-
-        public async Task<Client> GetClientByCredentials(string name, string surname, string login)
+        public async Task<Client> GetClientByCredentialsAsync(string name, string surname, string login)
         {
             return await _clientRepository.GetClientByCredentials(name, surname, login);
         }

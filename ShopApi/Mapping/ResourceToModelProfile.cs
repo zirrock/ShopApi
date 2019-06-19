@@ -13,6 +13,7 @@ namespace ShopApi.Mapping
         public ResourceToModelProfile()
         {
             CreateMap<SaveClientResource, Client>();
+            CreateMap<SaveOrderResource, Order>();
         }
     }
 }

@@ -31,34 +31,13 @@ namespace ShopApi.Controllers
             return resources;
         }
 
-//        [HttpGet("{id}")]
-//        public async Task<ClientResource> GetClient(long id)
-//        {
-//            var client = await _clientService.GetClientByIdAsync(id);
-//
-//            if (client == null)
-//            {
-//                return null;
-//            }
-//
-//            var resource = _mapper.Map<Client, ClientResource>(client);
-//
-//            return resource;
-//        }
-
-        [HttpGet]
-        public async Task<ClientResource> GetClientByCredentials(string name, string surname, string login)
+        [HttpGet("credentials")]
+        public async Task<ClientResource> GetClientByCredentials([FromBody] SearchClientResource resource)
         {
-            var client = await _clientService.GetClientByCredentialsAsync(name, surname, login);
+            var client = await _clientService.GetClientByCredentialsAsync(resource.Name, resource.Surname, resource.Login);
+            var clientResource = _mapper.Map<Client, ClientResource>(client);
 
-            if (client == null)
-            {
-                return null;
-            }
-
-            var resource = _mapper.Map<Client, ClientResource>(client);
-
-            return resource;
+            return clientResource;
         }
 
         [HttpPost]
