@@ -23,9 +23,17 @@ namespace ShopApi.Persistence.Repositories
 
         public async Task<Client> GetClientByIdAsync(long id)
         {
-            var client = await _context.Clients.FindAsync(id);
+            return await _context.Clients.FindAsync(id);
+        }
 
-            return client;
+        public async Task AddClientAsync(Client client)
+        {
+            await _context.Clients.AddAsync(client);
+        }
+
+        public void UpdateClient(Client client)
+        {
+            _context.Clients.Update(client);
         }
     }
 }

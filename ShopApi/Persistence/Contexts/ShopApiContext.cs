@@ -7,7 +7,6 @@ namespace ShopApi.Persistence.Contexts
     {
         public DbSet<Client> Clients { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Product> Products { get; set; }
 
         public ShopApiContext(DbContextOptions<ShopApiContext> options)
             : base(options)
@@ -31,14 +30,10 @@ namespace ShopApi.Persistence.Contexts
             builder.Entity<Order>().ToTable("Orders");
             builder.Entity<Order>().HasKey(p => p.Id);
             builder.Entity<Order>().Property(p => p.Id).IsRequired().ValueGeneratedOnAdd();
+            builder.Entity<Order>().Property(p => p.ProductName).IsRequired().HasMaxLength(80);
             builder.Entity<Order>().Property(p => p.ProductQuantity).IsRequired();
             builder.Entity<Order>().Property(p => p.OrderDate).IsRequired();
-
-            builder.Entity<Product>().ToTable("Products");
-            builder.Entity<Product>().HasKey(p => p.Id);
-            builder.Entity<Product>().Property(p => p.Id).IsRequired().ValueGeneratedOnAdd();
-            builder.Entity<Product>().Property(p => p.Name).HasMaxLength(80);
-            builder.Entity<Product>().HasMany(p => p.Orders).WithOne(p => p.Product).HasForeignKey(p => p.ProductId);
+            builder.Entity<Order>().Property(p => p.IsDeleted).IsRequired();
         }
     }
 }
